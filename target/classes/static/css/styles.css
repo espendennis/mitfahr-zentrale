@@ -1,0 +1,108 @@
+div.createuser {
+	padding-top:40px;
+	width: 60%;
+}
+div.createoffer {
+	padding-top:40px;
+	width: 60%;
+}
+
+table {
+	margin: auto;
+}
+
+p.api {
+	text-align: center;
+	padding-bottom: 20px;
+}
+
+body {
+	padding-bottom: 60px;
+}
+
+h1 {
+	text-align: center;
+	padding:40px 0px;		
+}
+h2 {
+	text-align: center;
+	padding:40px 0px;	
+}
+
+table {
+	border:   2px solid aqua;
+}
+
+span{
+	font-weight: bold;
+}
+
+th {
+	border-top: 2px solid aqua;
+
+}
+
+tr {
+    border: 2px solid aqua;
+
+}
+
+td {
+	border-top: 2x solid aqua; 
+
+} 
+
+.loginbtn {
+	margin-top: 10px;
+}
+.loginbtn_2 {
+	margin: 0px;
+	font-size: 20px;
+}
+
+.alert {
+	margin-left: 15px;
+	width: 78%;
+}
+
+.alert-hidden{
+	display: none;
+}
+
+.form-signin-heading {
+	text-align: center;
+	font-size: 30px;
+}
+.form-signin {
+	margin: 40px 0px;
+}
+
+.dropdown-menu {
+	padding: 0px;
+}
+
+div.panel {
+	margin: 40px auto;
+	border: 1px solid aqua;
+	border-radius: 4px;
+}
+
+.panel-title{
+	padding-left: 10px;
+	padding-bottom: 10px;
+	padding-top: 5px;
+	background-color: aqua;
+}
+
+.dropdown-menu-right{
+	width: 150%;
+}
+
+.panel-info {
+
+}
+
+.custom-footer {
+	background-color: lightgrey;
+	padding-top: 20px;
+}

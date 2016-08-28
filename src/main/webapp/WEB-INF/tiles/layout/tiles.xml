@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+	<!-- Templates -->
+	<definition name="baseLayout" template="/WEB-INF/tiles/templates/baselayout.jsp">
+		<put-attribute name="header" value="/WEB-INF/tiles/header.jsp" />
+		<put-attribute name="body" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/footer.jsp" />
+		<put-attribute name="script" value="" />
+		<put-attribute name="basescript" value="/WEB-INF/tiles/basescript.jsp" />
+	</definition>
+
+	<definition name="home" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/tiles/home.jsp" />
+	</definition>
+
+	<definition name="createuser" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/tiles/createuser.jsp" />
+		<put-attribute name="script" value="/WEB-INF/tiles/createuserscript.jsp" />
+	</definition>
+
+	<definition name="createoffer" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/tiles/createoffer.jsp" />
+		<put-attribute name="script" value="/WEB-INF/tiles/createofferscript.jsp" />
+	</definition>
+
+	<definition name="offer" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/tiles/offer.jsp" />
+	</definition>
+
+	<definition name="login" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/tiles/login.jsp" />
+	</definition>
+
+	<definition name="profile" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/tiles/profile.jsp" />
+	</definition>
+
+	<definition name="api" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/tiles/api.jsp" />
+	</definition>
+
+	<definition name="about" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/tiles/about.jsp" />
+	</definition>
+	
+	<definition name="usercreated" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/tiles/usercreated.jsp" />
+	</definition>
+	
+	<definition name="offercreated" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/tiles/offercreated.jsp" />
+	</definition>
+
+
+</tiles-definitions> 
