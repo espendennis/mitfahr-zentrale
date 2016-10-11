@@ -48,17 +48,14 @@ public class Offer {
 		this.id = id;
 		this.startingPoint = startingPoint;
 		this.destination = destination;
-		this.username = username;
+		this.username = username;	
+		this.date = Calendar.getInstance();
 		this.setDate(date);
 		this.price = price;
 	}
 
 	public Offer(String startingPoint, String destination, String username, String date, double price) {
-		this.startingPoint = startingPoint;
-		this.destination = destination;
-		this.username = username;
-		this.price = price;
-		this.setDate(date);
+		this(0, startingPoint, destination, username, date, price);
 	}
 
 	public int getId() {
@@ -101,10 +98,10 @@ public class Offer {
 
 	public void setDate(String dateString) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH:mm");
-		try {
-			date.setTime(sdf.parse(dateString));
+		try {		
+			this.date.setTime(sdf.parse(dateString));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 	}

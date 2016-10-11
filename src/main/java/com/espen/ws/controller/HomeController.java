@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.espen.ws.model.Offer;
 import com.espen.ws.model.User;
@@ -64,9 +65,7 @@ public class HomeController {
 	@RequestMapping(value = "/profile/{username}")
 	public String showProfile(@PathVariable String username, Model model) {
 		User user = usersService.findOne(username);
-		System.out.println(user);
 		model.addAttribute("user", user);
-		model.addAttribute("test", "TestText");
 		return "profile";
 	}
 
@@ -92,11 +91,11 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/newoffer")
-	public String creatOffer(Offer offer, Principal principal) {
+	public String createOffer(Offer offer, Principal principal) {
+		System.out.println("----" + offer);
 		offer.setUsername(principal.getName());
-		System.out.println(offer);
 		offersService.save(offer);
-		return "redirect:offercreated";
+		return "redirect:/offercreated";
 	}
 
 	@RequestMapping(value = "/offercreated")

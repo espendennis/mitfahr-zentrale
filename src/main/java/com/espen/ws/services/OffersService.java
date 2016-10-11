@@ -35,29 +35,19 @@ public class OffersService implements OffersServiceInterface {
 
 		offers.stream().filter(o -> o.getStartingPoint().equals(startingPoint))
 				.filter(o -> o.getDestination().equals(destination))
-				.filter(o -> o.getDateObject().getTime().getTime() > date.getTime().getTime())
+				.filter(o -> o.getDateObject().getTime().getTime() < date.getTime().getTime())
 				.filter(o -> o.getPrice() < price).sorted((o1, o2) -> o1.getDate().compareTo(o2.getDate()))
 				.forEach(o -> result.add(o));
 		return result;
 	}
 
 	public Offer save(Offer offer) {
-		try {
-			repository.save(offer);
-		} catch (Exception exc) {
-			exc.printStackTrace();
-		}
-		return offer;
+
+		return repository.save(offer);
+
 	}
 
 	public Offer update(Offer offer) {
-
-		Offer offerToUpdate = findOneById(offer.getId());
-		System.out.println(offer);
-		if (offerToUpdate == null) {
-			return null;
-		}
-
 		repository.save(offer);
 
 		return offer;
@@ -70,7 +60,6 @@ public class OffersService implements OffersServiceInterface {
 	public Collection<Offer> findAll() {
 		Collection<Offer> offers = (Collection<Offer>) repository.findAll();
 		Collection<Offer> result = new ArrayList<Offer>();
-
 		offers.stream().sorted((o1, o2) -> o1.getDate().compareTo(o2.getDate())).forEach(o -> result.add(o));
 		return result;
 

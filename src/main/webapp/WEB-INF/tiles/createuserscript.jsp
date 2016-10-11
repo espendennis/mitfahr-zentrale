@@ -1,6 +1,5 @@
 <script>
 	$(function() {
-
 		console.log("loaded");
 		$(".alertdiv").addClass("alert-hidden");
 		$("#password").keyup(checkPasswordsMatch);
@@ -10,7 +9,6 @@
 			event.preventDefault();								
 			}
 		});
-
 	})
 	
 	function validateForm(){
@@ -65,11 +63,9 @@
 		return validates;
 		
 	}
-
 	function checkPasswordsMatch() {
 		var password = $("#password").val();
 		var confirmpass = $("#confirmpassword").val();
-
 		if (password.length > 3 || confirmpass.length > 3) {
 			if (password == confirmpass) {
 				$("#passwordalert").addClass("alert-hidden");
@@ -78,5 +74,4 @@
 			}
 		}
 	}
-
 </script>

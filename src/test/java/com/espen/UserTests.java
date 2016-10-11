@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +17,9 @@ import com.espen.ws.model.User;
 import com.espen.ws.services.UsersServiceInterface;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
 @Transactional
+@TestPropertySource("test.properties")
 public class UserTests {
 
 	@Autowired
@@ -28,21 +31,19 @@ public class UserTests {
 	
 	@Before
 	public void init(){
-
+		usersService.save(user1);
+		usersService.save(user2);
 	}
 	
 	@Test
 	public void createAndGetUser(){
-		usersService.save(user1);
-		usersService.save(user2);
+
 		assertEquals("Retrieved user should match", user1, usersService.findOne(user1.getUsername()));
 		assertEquals("There should be 2 users found", 2, usersService.findAll().size());
 	}
 	
 	@Test
 	public void Update(){
-		usersService.save(user1);
-		usersService.save(user2);
 		user2.setAuthority("ROLE_ADMIN");
 		user2.setEmail("barack.obama@hotmail.com");
 		user2.setFirstname("Barack");
@@ -56,8 +57,6 @@ public class UserTests {
 	
 	@Test
 	public void delete(){
-		usersService.save(user1);
-		usersService.save(user2);
 		usersService.delete(user2);
 		assertEquals("One user should be found", 1, usersService.findAll().size());
 		User userNull = usersService.findOne(user2.getUsername());

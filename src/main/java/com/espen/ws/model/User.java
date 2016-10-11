@@ -124,6 +124,9 @@ public class User implements UserDetails {
 		this.phone = phone;
 	}
 
+	
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -132,7 +135,6 @@ public class User implements UserDetails {
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());
 		result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((phone == null) ? 0 : phone.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
@@ -167,11 +169,6 @@ public class User implements UserDetails {
 				return false;
 		} else if (!lastname.equals(other.lastname))
 			return false;
-		if (password == null) {
-			if (other.password != null)
-				return false;
-		} else if (!password.equals(other.password))
-			return false;
 		if (phone == null) {
 			if (other.phone != null)
 				return false;
@@ -187,7 +184,7 @@ public class User implements UserDetails {
 
 	@Override
 	public String toString() {
-		return "User [username=" + username + ", lastName=" + lastname + ", firstName=" + firstname + ", email=" + email
+		return "User [username=" + username + ", lastname=" + lastname + ", firstname=" + firstname + ", email=" + email
 				+ ", authority=" + authority + ", phone=" + phone + "]";
 	}
 
