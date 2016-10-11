@@ -212,4 +212,14 @@ public class OfferApiTests {
 		mockMvc.perform(delete("/api/offers/0"))
 		.andExpect(status().isNotFound());
 	}
+	
+	@Test
+	public void testPostOfferNotExistingUser() throws Exception{
+		Offer newOffer = new Offer("Innsbruck", "Lindau", "test", "2016-10-10T09:50", 40);
+		String json = mapper.writeValueAsString(newOffer);
+		mockMvc.perform(post("/api/offers")
+		.contentType(MediaType.APPLICATION_JSON_UTF8)
+		.content(json))
+		.andExpect(status().isNotFound());
+	}
 }

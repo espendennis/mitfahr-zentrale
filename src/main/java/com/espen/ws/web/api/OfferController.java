@@ -1,6 +1,9 @@
 package com.espen.ws.web.api;
 
+import java.io.IOException;
 import java.util.Collection;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,8 +30,10 @@ public class OfferController {
 	private UsersServiceInterface usersService;
 
 	@RequestMapping(value = "/api/offers", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Offer> createOffer(@Validated @RequestBody Offer offer) {
-		System.out.println("saved offer");
+	public ResponseEntity<Offer> createOffer(@Validated @RequestBody Offer offer, HttpServletResponse response) throws IOException {
+		if(usersService.findOne(offer.getUsername())==null){
+			response.sendError(HttpStatus.NOT_FOUND.value());
+		}
 		Offer savedOffer = offersService.save(offer);
 		return new ResponseEntity<Offer>(savedOffer, HttpStatus.CREATED);
 	}
@@ -40,38 +45,39 @@ public class OfferController {
 	}
 
 	@RequestMapping(value = "/api/offers/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Offer> getOffersById(@PathVariable("id") Integer id) {
+	public ResponseEntity<Offer> getOffersById(@PathVariable("id") Integer id, HttpServletResponse response) throws IOException {
 		Offer offer = offersService.findOneById(id);
 		if(offer == null){
-			return new ResponseEntity<Offer>(HttpStatus.NOT_FOUND);
+			response.sendError(HttpStatus.NOT_FOUND.value());
 		}
 		return new ResponseEntity<Offer>(offer, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/api/offers/username/{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<Offer>> getOffersByUsername(@PathVariable("username") String username) {
+	public ResponseEntity<Collection<Offer>> getOffersByUsername(@PathVariable("username") String username, HttpServletResponse response) throws IOException {
 	
 		if( usersService.findOne(username) == null ){
-			return new ResponseEntity<Collection<Offer>>(HttpStatus.NOT_FOUND);
+			response.sendError(HttpStatus.NOT_FOUND.value());
 		}
 		Collection<Offer> offers = offersService.findByUsername(username);
 		return new ResponseEntity<Collection<Offer>>(offers, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/api/offers/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Offer> updateOffer(@PathVariable Integer id, @RequestBody Offer offer) {
+	public ResponseEntity<Offer> updateOffer(@PathVariable Integer id, @Validated @RequestBody Offer offer, HttpServletResponse response) throws IOException {
 		offer.setId(id);
 		if(offersService.findOneById(id)== null){
-			return new ResponseEntity<Offer>(HttpStatus.NOT_FOUND);
+			response.sendError(HttpStatus.NOT_FOUND.value());
 		}
 		Offer updatedOffer = offersService.update(offer);
 		return new ResponseEntity<Offer>(updatedOffer, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/api/offers/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Offer> deleteOffer(@PathVariable Integer id) {
+	public ResponseEntity<Offer> deleteOffer(@PathVariable Integer id, HttpServletResponse response) throws IOException {
 		if(offersService.findOneById(id)== null){
-			return new ResponseEntity<Offer>(HttpStatus.NOT_FOUND);
+			response.sendError(HttpStatus.NOT_FOUND.value());
+			return null;
 		}
 		Offer offerToDelete = offersService.findOneById(id);
 		offersService.delete(offerToDelete);
