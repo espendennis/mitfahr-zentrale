@@ -3,23 +3,34 @@ package com.espen;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+
 
 import java.util.ArrayList;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,7 +43,6 @@ import com.espen.ws.model.Offer;
 import com.espen.ws.model.User;
 import com.espen.ws.services.OffersServiceInterface;
 import com.espen.ws.services.UsersServiceInterface;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
@@ -51,6 +61,20 @@ public class OfferApiTests {
 	
 	@Autowired
 	private ObjectMapper mapper;
+	
+	@Rule
+	public JUnitRestDocumentation restDocumentation =
+			new JUnitRestDocumentation("target/generated-snippets");
+	
+	FieldDescriptor[] offer = new FieldDescriptor[]{
+			fieldWithPath("id").description("identifier"),
+			fieldWithPath("destination").description("The destination of the trip"),
+			fieldWithPath("startingPoint").description("Where the trip starts"),
+			fieldWithPath("username").description("The creators username"),
+			fieldWithPath("date").description("When the trip starts"),
+			fieldWithPath("price").description("The price"),
+			fieldWithPath("dateObject").description("Object-representation for date")
+	};
 	
     private MockMvc mockMvc;
 
@@ -73,7 +97,7 @@ public class OfferApiTests {
 		offersService.save(offer3);
 		offersService.save(offer4);
 		offersService.save(offer5);
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(documentationConfiguration(this.restDocumentation)).build();
 
 	}
 	
@@ -83,6 +107,9 @@ public class OfferApiTests {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 		.andExpect(jsonPath("$", hasSize(5)))
+		.andDo(document("getOffers", responseFields(
+									fieldWithPath("[]").description("An array of offers"))
+									.andWithPrefix("[].", offer)))
 		.andReturn();
 		//array weil es kein container sein darf....Javadoc und sourcecode schauen
 		Offer[] offers = mapper.readValue(result.getResponse().getContentAsString(), Offer[].class);
@@ -98,9 +125,11 @@ public class OfferApiTests {
 	public void testGetOfferById() throws Exception{
 		ArrayList<Offer> offers = (ArrayList<Offer>)offersService.findAll();
 		Offer offerToTest = offers.get(0);
-		MvcResult result = mockMvc.perform(get("/api/offers/" + offerToTest.getId()))
+		MvcResult result = mockMvc.perform(get("/api/offers/{id}", offerToTest.getId()))
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 			.andExpect(status().isOk())
+			.andDo(document("getOfferById", responseFields(offer)))
+			.andDo(document("getOfferById", pathParameters(parameterWithName("id").description("The id of the requested offer"))))
 			.andReturn();
 		Offer retrievedOffer = mapper.readValue(result.getResponse().getContentAsString(), Offer.class);
 		assertEquals(offerToTest, retrievedOffer);
@@ -114,6 +143,8 @@ public class OfferApiTests {
 		.contentType(MediaType.APPLICATION_JSON_UTF8)
 		.content(json))
 		.andExpect(status().isCreated())
+		.andDo(document("postOffer", requestFields(offer)))
+		.andDo(document("postOffer", responseFields(offer)))
 		.andReturn();
 		Offer retrieved = mapper.readValue(result.getResponse().getContentAsString(), Offer.class);
 		assertEquals(newOffer, retrieved);
@@ -137,11 +168,15 @@ public class OfferApiTests {
 				offerToChange.setUsername("admin");
 				offerToChange.setDate("2017-11-11T09:25");
 				String json = mapper.writeValueAsString(offerToChange);
-			MvcResult result = mockMvc.perform(put("/api/offers/" + offerToChange.getId())
+			MvcResult result = mockMvc.perform(put("/api/offers/{id}", offerToChange.getId())
 				.contentType(MediaType.APPLICATION_JSON_UTF8)
 				.content(json))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andDo(document("putOffer", pathParameters(parameterWithName("id").description("The id of the offer to update"))))
+				.andDo(document("putOffer", requestFields(offer)))
+				.andDo(document("putOffer", responseFields(offer)))
+				.andReturn();
 			Offer offerRecieved = mapper.readValue(result.getResponse().getContentAsString(), Offer.class);
 			assertEquals(offerToChange, offerRecieved);
 			offers = (ArrayList<Offer>)offersService.findAll();
@@ -158,8 +193,9 @@ public class OfferApiTests {
 	public void testDeleteOffer() throws Exception{
 		ArrayList<Offer> offers = (ArrayList<Offer>)offersService.findAll();
 		Offer offerToDelete = offers.get(0);
-		mockMvc.perform(delete("/api/offers/" + offerToDelete.getId()))
-				.andExpect(status().isNoContent());
+		mockMvc.perform(delete("/api/offers/{id}", offerToDelete.getId()))
+				.andExpect(status().isNoContent())
+				.andDo(document("deleteOffer", pathParameters(parameterWithName("id").description("The id of the offer to delete"))));
 		assertNull(offersService.findOneById(offerToDelete.getId()));
 		offers = (ArrayList<Offer>)offersService.findAll();
 		assertEquals(offers.size(), 4);
@@ -170,11 +206,16 @@ public class OfferApiTests {
 	}
 	
 	@Test
-	public void testGetOfferByUsername() throws Exception{
-		MvcResult result = mockMvc.perform(get("/api/offers/username/user1"))
+	public void testGetOffersByUsername() throws Exception{
+		MvcResult result = mockMvc.perform(get("/api/offers/username/{username}", user1.getUsername()))
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 		.andExpect(status().isOk())
-		.andExpect(jsonPath("$", hasSize(4))).andReturn();
+		.andExpect(jsonPath("$", hasSize(4)))
+		.andDo(document("getOfferByUsername", pathParameters(parameterWithName("username").description("The user whos offers should be retrieved"))))
+		.andDo(document("getOfferByUsername", responseFields(
+				fieldWithPath("[]").description("An array of offers"))
+				.andWithPrefix("[].", offer)))
+		.andReturn();
 		Offer[] offersFromApi = mapper.readValue(result.getResponse().getContentAsString(), Offer[].class);
 		ArrayList<Offer> offersFromDatabase = (ArrayList<Offer>) offersService.findByUsername("user1");
 		assertEquals(offersFromApi[0], offersFromDatabase.get(0));

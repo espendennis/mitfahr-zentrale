@@ -5,23 +5,34 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import java.util.ArrayList;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,7 +44,6 @@ import org.springframework.web.context.WebApplicationContext;
 import com.espen.utils.UserJsonParser;
 import com.espen.ws.model.User;
 import com.espen.ws.services.UsersServiceInterface;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
@@ -54,6 +64,33 @@ public class UserApiTests {
 	@Autowired
 	private UserJsonParser parser;
 	
+	@Rule
+	public JUnitRestDocumentation restDocumentation =
+			new JUnitRestDocumentation("target/generated-snippets");
+	
+	FieldDescriptor[] user = new FieldDescriptor[]{
+			fieldWithPath("username").description("the username"),
+			fieldWithPath("lastname").description("the user's lastname"),
+			fieldWithPath("firstname").description("the user's firstname"),
+			fieldWithPath("password").description("the user's password"),
+			fieldWithPath("email").description("the user's email"),
+			fieldWithPath("authority").description("the user's authority"),
+			fieldWithPath("phone").description("the user's phone number"),
+			fieldWithPath("authorities[].authority").description("the user's authorities"),
+			fieldWithPath("accountNonExpired").description("if the user is not expired"),
+			fieldWithPath("accountNonLocked").description("if the user is not locked"),
+			fieldWithPath("credentialsNonExpired").description("if the user's credentials are not expired"),
+			fieldWithPath("enabled").description("if the user is enabled")
+	};
+	FieldDescriptor[] userRequest = new FieldDescriptor[]{
+			fieldWithPath("username").description("the username"),
+			fieldWithPath("lastname").description("the user's lastname"),
+			fieldWithPath("firstname").description("the user's firstname"),
+			fieldWithPath("password").description("the user's password"),
+			fieldWithPath("email").description("the user's email"),
+			fieldWithPath("phone").description("the user's phone number"),
+	};
+	
     private MockMvc mockMvc;
 
 	
@@ -73,7 +110,7 @@ public class UserApiTests {
 		usersService.save(user3);
 		usersService.save(user4);
 		usersService.save(user5);
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(documentationConfiguration(this.restDocumentation)).build();;
 	}
 	
 	@Test
@@ -82,8 +119,11 @@ public class UserApiTests {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 		.andExpect(jsonPath("$", hasSize(5)))
+		.andDo(document("getUsers", responseFields(
+				fieldWithPath("[]").description("An array of users"))
+				.andWithPrefix("[].", user)))
 		.andReturn();
-		
+
 		ArrayList<User> users = parser.deserializeArray(result.getResponse().getContentAsString());
 		assertEquals(users.get(0),user1);
 		assertEquals(users.get(1),user2);
@@ -97,9 +137,11 @@ public class UserApiTests {
 	public void testGetUserByUsername() throws Exception{
 		ArrayList<User> users = (ArrayList<User>)usersService.findAll();
 		User userToTest = users.get(0);
-		MvcResult result = mockMvc.perform(get("/api/users/" + userToTest.getUsername()))
+		MvcResult result = mockMvc.perform(get("/api/users/{username}", userToTest.getUsername()))
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 			.andExpect(status().isOk())
+			.andDo(document("getUserByUsername", responseFields(user)))
+			.andDo(document("getUserByUsername", pathParameters(parameterWithName("username").description("The username of the requested user"))))
 			.andReturn();
 		User retrievedUser = parser.deserializeUser(result.getResponse().getContentAsString());
 		assertEquals(userToTest, retrievedUser);
@@ -113,6 +155,8 @@ public class UserApiTests {
 		.contentType(MediaType.APPLICATION_JSON_UTF8)
 		.content(json))
 		.andExpect(status().isCreated())
+		.andDo(document("postUser", requestFields(userRequest)))
+		.andDo(document("postUser", responseFields(user)))
 		.andReturn();
 		User returnedUser = parser.deserializeUser(result.getResponse().getContentAsString());
 		assertEquals(userToTest, returnedUser);
@@ -136,10 +180,13 @@ public class UserApiTests {
 		userToTest.setEmail("darthvader@empire.com");
 		userToTest.setPhone("5551234");
 		String json = parser.toJson(userToTest);
-			MvcResult result = mockMvc.perform(put("/api/users/" + userToTest.getUsername())
+			MvcResult result = mockMvc.perform(put("/api/users/{username}", userToTest.getUsername())
 				.contentType(MediaType.APPLICATION_JSON_UTF8)
 				.content(json))
 				.andExpect(status().isOk())
+				.andDo(document("putUser", pathParameters(parameterWithName("username").description("The username of the user to update"))))
+				.andDo(document("putUser", requestFields(userRequest)))
+				.andDo(document("putUser", responseFields(user)))
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8)).andReturn();
 		User userRetrieved = parser.deserializeUser(result.getResponse().getContentAsString());
 		assertEquals(userToTest, userRetrieved);
@@ -156,8 +203,9 @@ public class UserApiTests {
 	public void testDeleteUser() throws Exception{
 		ArrayList<User> users = (ArrayList<User>)usersService.findAll();
 		User userToTest = users.get(0);
-		mockMvc.perform(delete("/api/users/" + userToTest.getUsername()))
-				.andExpect(status().isNoContent());
+		mockMvc.perform(delete("/api/users/{username}", userToTest.getUsername()))
+				.andExpect(status().isNoContent())
+				.andDo(document("deleteUser", pathParameters(parameterWithName("username").description("The username of the user to delete"))));
 		assertNull(usersService.findOne(userToTest.getUsername()));
 		assertEquals(usersService.findAll().size(), 4);
 		assertEquals(usersService.findOne(user2.getUsername()), user2);
