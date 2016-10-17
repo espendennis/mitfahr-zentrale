@@ -48,7 +48,7 @@ public class Offer {
 		this.id = id;
 		this.startingPoint = startingPoint;
 		this.destination = destination;
-		this.username = username;	
+		this.username = username;
 		this.date = Calendar.getInstance();
 		this.setDate(date);
 		this.price = price;
@@ -98,7 +98,7 @@ public class Offer {
 
 	public void setDate(String dateString) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH:mm");
-		try {		
+		try {
 			this.date.setTime(sdf.parse(dateString));
 		} catch (ParseException e) {
 			throw new RuntimeException(e);

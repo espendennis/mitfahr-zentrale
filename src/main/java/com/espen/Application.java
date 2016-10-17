@@ -4,13 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesView;
 
 /**
- * Spring Boor main Application
+ * Spring Boot main Application
  * 
  * @author Dennis
  *
@@ -22,9 +21,9 @@ public class Application {
 
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(Application.class, args);
-		
+
 	}
-	
+
 	@Bean
 	public UrlBasedViewResolver tilesViewResolver() {
 
@@ -41,6 +40,5 @@ public class Application {
 		return tconf;
 
 	}
-	
-	
+
 }
