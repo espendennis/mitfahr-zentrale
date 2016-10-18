@@ -53,13 +53,14 @@ public class OfferApiTests {
 
 	private MockMvc mockMvc;
 
-	Offer offer1 = new Offer("Berlin", "München", "user1", "2016-10-10T08:10", 30);
-	Offer offer2 = new Offer("Frankfurt", "Hamburg", "user1", "2016-10-10T08:20", 30);
-	Offer offer3 = new Offer("Berlin", "München", "admin", "2016-10-10T08:30", 30);
-	Offer offer4 = new Offer("Berlin", "München", "user1", "2016-10-10T08:40", 30);
-	Offer offer5 = new Offer("Berlin", "München", "user1", "2016-10-10T08:50", 40);
-	User user1 = new User("user1", "Espen", "Dennis", "password", "dennis.espen@hotmail.com", "5551234");
-	User user2 = new User("admin", "Espen", "Dennis", "123456seven", "dennis.espen@hotmail.com", "5551234");
+	private final Offer offer1 = new Offer("Berlin", "München", "user1", "2016-10-10T08:10", 30);
+	private final Offer offer2 = new Offer("Frankfurt", "Hamburg", "user1", "2016-10-10T08:20", 30);
+	private final Offer offer3 = new Offer("Berlin", "München", "admin", "2016-10-10T08:30", 30);
+	private final Offer offer4 = new Offer("Berlin", "München", "user1", "2016-10-10T08:40", 30);
+	private final Offer offer5 = new Offer("Berlin", "München", "user1", "2016-10-10T08:50", 40);
+	private final User user1 = new User("user1", "Skywalker", "Lukas", "TheForce", "luke@therebellion.com", "5551234");
+	private final User user2 = new User("admin", "Yodaa", "Master", "123456seven", "master.yoda@dagobah.com",
+			"5551235");
 
 	@Before
 	public void init() {
@@ -106,7 +107,8 @@ public class OfferApiTests {
 		String json = mapper.writeValueAsString(newOffer);
 		MvcResult result = mockMvc
 				.perform(post("/api/offers").contentType(MediaType.APPLICATION_JSON_UTF8).content(json))
-				.andExpect(status().isCreated()).andReturn();
+				.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andReturn();
 		Offer retrieved = mapper.readValue(result.getResponse().getContentAsString(), Offer.class);
 		assertEquals(newOffer, retrieved);
 		ArrayList<Offer> offers = (ArrayList<Offer>) offersService.findAll();

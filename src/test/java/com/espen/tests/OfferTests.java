@@ -31,13 +31,14 @@ public class OfferTests {
 	@Autowired
 	private UsersServiceInterface usersService;
 
-	Offer offer1 = new Offer("Frankfurt", "München", "espendennis", "2016-10-09T08:30", 30);
-	Offer offer2 = new Offer("Berlin", "Hamburg", "espendennis", "2016-10-09T08:30", 30);
-	Offer offer3 = new Offer("Berlin", "München", "espendennis", "2016-10-11T08:30", 30);
-	Offer offer4 = new Offer("Berlin", "München", "espendennis", "2016-10-09T08:30", 200);
-	Offer offer5 = new Offer("Berlin", "München", "POTUS", "2016-10-09T08:30", 30);
-	User user1 = new User("espendennis", "espen", "dennis", "dbpass", "dennis.espen@hotmail.com", "5551234");
-	User user2 = new User("POTUS", "Barack", "Obama", "123456seven", "barack.obama@hotmail.com", "5551234");
+	private final Offer offer1 = new Offer("Frankfurt", "München", "user1", "2016-10-09T08:30", 30);
+	private final Offer offer2 = new Offer("Berlin", "Hamburg", "user1", "2016-10-09T08:30", 30);
+	private final Offer offer3 = new Offer("Berlin", "München", "user1", "2016-10-11T08:30", 30);
+	private final Offer offer4 = new Offer("Berlin", "München", "user1", "2016-10-09T08:30", 200);
+	private final Offer offer5 = new Offer("Berlin", "München", "admin", "2016-10-09T08:30", 30);
+	private final User user1 = new User("user1", "Skywalker", "Lukas", "TheForce", "luke@therebellion.com", "5551234");
+	private final User user2 = new User("admin", "Yodaa", "Master", "123456seven", "master.yoda@dagobah.com",
+			"5551235");
 
 	@Before
 	public void init() {
@@ -99,8 +100,8 @@ public class OfferTests {
 	public void testGetByUsername() {
 
 		assertEquals("Retrieved offer should match", offer5,
-				offersService.findByUsername(offer5.getUsername()).toArray()[0]);
-		assertEquals("Should find 4 offers", 4, offersService.findByUsername(offer1.getUsername()).size());
+				offersService.findByUsername(user2.getUsername()).toArray()[0]);
+		assertEquals("Should find 4 offers", 4, offersService.findByUsername(user1.getUsername()).size());
 	}
 
 }

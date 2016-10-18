@@ -51,13 +51,14 @@ public class HomeControllerTests {
 
 	private MockMvc mockMvc;
 
-	Offer offer1 = new Offer("Berlin", "München", "user1", "2016-10-10T08:10", 30);
-	Offer offer2 = new Offer("Frankfurt", "Hamburg", "user1", "2016-10-10T08:20", 30);
-	Offer offer3 = new Offer("Berlin", "München", "admin", "2016-10-10T08:30", 30);
-	Offer offer4 = new Offer("Berlin", "München", "user1", "2016-10-10T08:40", 30);
-	Offer offer5 = new Offer("Berlin", "München", "user1", "2016-10-10T08:50", 40);
-	User user1 = new User("user1", "Espen", "Dennis", "password", "dennis.espen@hotmail.com", "5551234");
-	User user2 = new User("admin", "Espen", "Dennis", "123456seven", "dennis.espen@hotmail.com", "5551234");
+	private final Offer offer1 = new Offer("Berlin", "München", "user1", "2016-10-10T08:10", 30);
+	private final Offer offer2 = new Offer("Frankfurt", "Hamburg", "user1", "2016-10-10T08:20", 30);
+	private final Offer offer3 = new Offer("Berlin", "München", "admin", "2016-10-10T08:30", 30);
+	private final Offer offer4 = new Offer("Berlin", "München", "user1", "2016-10-10T08:40", 30);
+	private final Offer offer5 = new Offer("Berlin", "München", "user1", "2016-10-10T08:50", 40);
+	private final User user1 = new User("user1", "Skywalker", "Lukas", "TheForce", "luke@therebellion.com", "5551234");
+	private final User user2 = new User("admin", "Yodaa", "Master", "123456seven", "master.yoda@dagobah.com",
+			"5551235");
 
 	@Before
 	public void init() {
@@ -152,8 +153,7 @@ public class HomeControllerTests {
 
 	@Test
 	public void testNewUser() throws Exception {
-		User testuser = new User("newuser", "Washington", "George", "Constitution", "george@thewhitehouse.gov",
-				"01435673423");
+		User testuser = new User("newuser", "Darth", "Vader", "Empire", "darth@thedarkforce.com", "01435673423");
 		mockMvc.perform(post("/newuser").param("username", testuser.getUsername())
 				.param("firstname", testuser.getFirstname()).param("lastname", testuser.getLastname())
 				.param("password", testuser.getPassword()).param("email", testuser.getEmail())

@@ -1,0 +1,169 @@
+= /api/offers Getting Started Guide
+Dennis Espen;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[introduction]
+= Einleitung
+
+/api/offers ist der Endpunkt um mit den Angeboten zu arbeiten
+
+[[overview]]
+= Überblick
+
+[[overview-http-verbs]]
+== HTTP verbs
+Dieser REST-Endpunkt verwendet Standart HTTP Verbs.
+
+|===
+| Verb | Verwendung
+
+| `GET`
+| Um eine Ressource abzurufen
+
+| `POST`
+| Um eine neue Ressource zu erzeugen
+
+| `PUT`
+| Um eine existierende Ressource upzudaten
+
+| `DELETE`
+| Um eine bestehende Ressource zu löschen
+|===
+
+[[overview-http-status-codes]]
+== HTTP status codes
+Dieser REST-Endpunkt verwendet Standart HTTPstatus codes.
+
+|===
+| Status code | Bedeutung
+
+| `200 OK`
+| Standard status für eine erfolgreiche Anfrage.
+
+
+| `201 Created`
+| Die Anfrage war erfolgreich und hat eine neue Ressource erzeugt.
+
+| `204 No Content`
+| Die Anfrage war erfolgreich, der Server hat keine Daten zurückgegeben. Z.B.: erfolgreiches löschen eines users.
+
+| `400 Bad Request`
+| Der Server kann oder möchte die Anfrage nicht verarbeiten. Es wird von einem Client ausgegangen. z.B.: Constraintverletzungen.
+
+| `404 Not Found`
+| Die angefragte Ressource wurde nicht gefunden.
+|===
+
+[[resources]]
+= Ressourcen
+
+
+[[resources-offer]]
+== Angebot
+Die Offers Ressource wird verwendet um Angebote anzulegen, aufzulisten, upzudaten und zu löschen.
+
+=== Struktur der Anfrage
+
+include::{snippets}/post-offer/request-fields.adoc[]
+
+=== Struktur der Antwort
+
+include::{snippets}/post-offer/response-fields.adoc[]
+
+[[resource-offer-list]]
+=== Angebote auflisten
+Eine `GET` Anfrage an /api/offers listet alle Angebote auf.
+
+==== Beispiel Anfrage
+
+include::{snippets}/get-offers/curl-request.adoc[]
+
+==== Beispiel Antwort
+
+include::{snippets}/get-offers/http-response.adoc[]
+
+
+[[resource-offer-getbyusername]]
+=== Angebote über username aufrufen
+Eine `GET` Anfrage an /api/offers/username/{username} gibt die Angebote des betreffenden Users zurück.
+
+==== Pfad Parameter
+
+include::{snippets}/get-offers-by-username/path-parameters.adoc[]
+
+==== Beispiel Anfrage
+
+include::{snippets}/get-offers-by-username/curl-request.adoc[]
+
+==== Beispiel Antwort
+
+include::{snippets}/get-offers-by-username/http-response.adoc[]
+
+
+[[resource-offer-getbyid]]
+=== Angebote über id aufrufen
+Eine `GET` Anfrage an /api/offers/{id} gibt das Angebot mit der betreffenden id zurück.
+
+==== Pfad Parameter
+
+include::{snippets}/get-offer-by-id/path-parameters.adoc[]
+
+==== Beispiel Anfrage
+
+include::{snippets}/get-offer-by-id/curl-request.adoc[]
+
+==== Beispiel Antwort
+
+include::{snippets}/get-offer-by-id/http-response.adoc[]
+
+
+[[resource-offer-create]]
+=== Angebot erstellen
+Eine `POST` Anfrage an /api/offers/ erstellt einen neuen user.
+
+==== Beispiel Anfrage
+
+include::{snippets}/post-offer/curl-request.adoc[]
+
+==== Beispiel Antwort
+
+include::{snippets}/post-offer/http-response.adoc[]
+
+
+[[resource-offer-update]]
+=== Angebot updaten
+Eine `PUT` Anfrage an api/offers/{id} updated das Angebot mit der betreffenden id.
+
+==== Pfad Parameter
+
+include::{snippets}/put-offer/path-parameters.adoc[]
+
+==== Beispiel Anfrage
+
+include::{snippets}/put-offer/curl-request.adoc[]
+
+==== Beispiel Antwort
+
+include::{snippets}/put-offer/http-response.adoc[]
+
+[[resource-offer-delete]]
+=== Angebot löschen
+Eine `DELETE` Anfrage an /api/offers/{id} löscht ein Angebot mit betreffender id.
+
+==== Pfad Parameter
+
+include::{snippets}/delete-offer/path-parameters.adoc[]
+
+==== Beispiel Anfrage
+
+include::{snippets}/delete-offer/curl-request.adoc[]
+
+==== Beispiel Antwort
+
+include::{snippets}/delete-offer/http-response.adoc[]
+

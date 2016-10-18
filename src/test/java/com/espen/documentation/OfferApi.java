@@ -1,25 +1,24 @@
 package com.espen.documentation;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,6 +31,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.constraints.ConstraintDescriptions;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -45,14 +45,12 @@ import com.espen.ws.model.User;
 import com.espen.ws.services.OffersServiceInterface;
 import com.espen.ws.services.UsersServiceInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.restdocs.payload.FieldDescriptor;
-import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Transactional
 @TestPropertySource("test.properties")
-public class OfferApiDocumentation {
+public class OfferApi {
 
 	@Autowired
 	private OffersServiceInterface offersService;
@@ -60,31 +58,31 @@ public class OfferApiDocumentation {
 	private UsersServiceInterface usersService;
 
 	@Autowired
-	private ObjectMapper mapper;
-
-	@Autowired
 	private WebApplicationContext webApplicationContext;
 
-	private RestDocumentationResultHandler document;
-
-	ConstrainedFields fields = new ConstrainedFields(Offer.class);
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Rule
 	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("target/generated-snippets");
 
+	ConstrainedFields fields = new ConstrainedFields(Offer.class);
+
+	FieldDescriptor[] offer = new FieldDescriptor[] { fields.withPath("id").description("identifier"),
+			fields.withPath("destination").description("The destination of the trip"),
+			fields.withPath("startingPoint").description("Where the trip starts"),
+			fields.withPath("username").description("The creators username"),
+			fields.withPath("date").description("When the trip starts"),
+			fields.withPath("price").description("The price"),
+			fields.withPath("dateObject").description("Object-representation for date") };
+
 	private MockMvc mockMvc;
+
+	private RestDocumentationResultHandler document;
 
 	Offer offer1 = new Offer("Berlin", "München", "admin", "2016-10-10T08:10", 30);
 	Offer offer2 = new Offer("Frankfurt", "Hamburg", "admin", "2016-10-10T08:20", 30);
 	User user1 = new User("admin", "Admin", "TestUser", "123456seven", "dennis.espen@comsysto.com", "5551234");
-
-	FieldDescriptor[] offer = new FieldDescriptor[] { fields.withPath("id").description("identifier"),
-			fields.withPath("destination").description("The trips' destination"),
-			fields.withPath("startingPoint").description("The trips' startingPoint"),
-			fields.withPath("username").description("The user who has created the offer"),
-			fields.withPath("date").description("The trip's starting time formatted"),
-			fields.withPath("price").description("The price per person"),
-			fields.withPath("dateObject").description("The trip's starting time as milliseconds") };
 
 	@Before
 	public void init() {
@@ -97,6 +95,7 @@ public class OfferApiDocumentation {
 
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 				.apply(documentationConfiguration(this.restDocumentation)).alwaysDo(this.document).build();
+
 	}
 
 	@Test

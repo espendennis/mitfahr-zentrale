@@ -25,9 +25,10 @@ public class UserTests {
 	@Autowired
 	private UsersServiceInterface usersService;
 
-	User user1 = new User("espendennis", "espen", "dennis", "dbpass", "dennis.espen@hotmail.com", "5551234");
-	User user2 = new User("BenjaminFranklin", "Franklin", "Benjamin", "dbpass", "benjamin.franklin@hotmail.com",
+	private final User user1 = new User("espendennis", "espen", "dennis", "dbpass", "dennis.espen@hotmail.com",
 			"5551234");
+	private final User user2 = new User("BenjaminFranklin", "Franklin", "Benjamin", "dbpass",
+			"benjamin.franklin@hotmail.com", "5551234");
 
 	@Before
 	public void init() {
