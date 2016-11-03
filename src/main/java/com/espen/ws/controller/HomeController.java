@@ -91,7 +91,6 @@ public class HomeController {
 
 	@RequestMapping(value = "/newoffer")
 	public String createOffer(Offer offer, Principal principal) {
-		System.out.println("----" + offer);
 		offer.setUsername(principal.getName());
 		offersService.save(offer);
 		return "redirect:/offercreated";
