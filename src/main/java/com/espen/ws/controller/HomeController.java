@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.espen.ws.model.Offer;
 import com.espen.ws.model.User;
@@ -92,7 +91,6 @@ public class HomeController {
 
 	@RequestMapping(value = "/newoffer")
 	public String createOffer(Offer offer, Principal principal) {
-		System.out.println("----" + offer);
 		offer.setUsername(principal.getName());
 		offersService.save(offer);
 		return "redirect:/offercreated";

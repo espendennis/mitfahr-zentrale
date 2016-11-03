@@ -14,41 +14,27 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	public void configureGlobal(
-			AuthenticationManagerBuilder auth,
-			UserDetailsService userDetailsService){
+	public void configureGlobal(AuthenticationManagerBuilder auth, UserDetailsService userDetailsService) {
 		try {
-			auth.
-				userDetailsService(userDetailsService)
-					.passwordEncoder(new BCryptPasswordEncoder());
-				
+			auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
+
 	@Override
-	protected void configure(HttpSecurity http){
+	protected void configure(HttpSecurity http) {
 		try {
-			http
-				.authorizeRequests()
-					.antMatchers("/", "/createuser", "/about", "/api", "/resources/**", "/profil/*","/offer/*","/newuser","/usercreated" ).permitAll()
-					.antMatchers("/api/**").hasRole("ADMIN")
-					.anyRequest().authenticated()
-					.and()
-				.formLogin()
-					.loginPage("/login")
-					.permitAll()
-					.and()
-				.logout()
-					.permitAll()
-					.and()
-				.csrf().disable()
-				.formLogin().and()
-				.httpBasic();
+			http.authorizeRequests()
+					.antMatchers("/", "/createuser", "/about", "/api", "/resources/**", "/profil/*", "/offer/*",
+							"/newuser", "/usercreated")
+					.permitAll().antMatchers("/api/**").hasRole("ADMIN").anyRequest().authenticated().and().formLogin()
+					.loginPage("/login").permitAll().and().logout().permitAll().and().csrf().disable().formLogin().and()
+					.httpBasic();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
 }

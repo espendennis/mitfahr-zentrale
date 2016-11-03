@@ -68,8 +68,9 @@ public class UserJsonParser {
 		parsedUser.setAuthority((String) jsonObject.get("authority"));
 		return parsedUser;
 	}
-	
-	public String toJson(User user){
+
+	@SuppressWarnings("unchecked")
+	public String toJson(User user) {
 		JSONObject obj = new JSONObject();
 		obj.put("username", user.getUsername());
 		obj.put("lastname", user.getLastname());
@@ -81,18 +82,3 @@ public class UserJsonParser {
 		return obj.toJSONString();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

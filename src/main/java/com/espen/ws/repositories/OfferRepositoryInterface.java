@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.espen.ws.model.Offer;
 
-public interface OfferRepositoryInterface extends CrudRepository<Offer, Integer>{
+public interface OfferRepositoryInterface extends CrudRepository<Offer, Integer> {
 
 }

@@ -1,0 +1,153 @@
+= /api/users Getting Started Guide
+Dennis Espen;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[introduction]
+= Einleitung
+
+/api/users ist der Endpunkt um mit den Usern zu arbeiten
+
+[[overview]]
+= Überblick
+
+[[overview-http-verbs]]
+== HTTP verbs
+Dieser REST-Endpunkt verwendet Standart HTTP Verbs.
+
+|===
+| Verb | Verwendung
+
+| `GET`
+| Um eine Ressource abzurufen
+
+| `POST`
+| Um eine neue Ressource zu erzeugen
+
+| `PUT`
+| Um eine existierende Ressource upzudaten
+
+| `DELETE`
+| Um eine bestehende Ressource zu löschen
+|===
+
+[[overview-http-status-codes]]
+== HTTP status codes
+Dieser REST-Endpunkt verwendet Standart HTTPstatus codes.
+
+|===
+| Status code | Bedeutung
+
+| `200 OK`
+| Standard status für eine erfolgreiche Anfrage.
+
+
+| `201 Created`
+| Die Anfrage war erfolgreich und hat eine neue Ressource erzeugt.
+
+| `204 No Content`
+| Die Anfrage war erfolgreich, der Server hat keine Daten zurückgegeben. Z.B.: erfolgreiches löschen eines users.
+
+| `400 Bad Request`
+| Der Server kann oder möchte die Anfrage nicht verarbeiten. Es wird von einem Client ausgegangen. z.B.: Constraintverletzungen.
+
+| `404 Not Found`
+| Die angefragte Ressource wurde nicht gefunden.
+|===
+
+[[resources]]
+= Ressourcen
+
+
+[[resources-user]]
+== User
+Die Users Ressource wird verwendet um user anzulegen, aufzulisten, upzudaten und zu löschen.
+
+=== Struktur der Anfrage
+
+include::{snippets}/post-user/request-fields.adoc[]
+
+=== Struktur der Antwort
+
+include::{snippets}/post-user/response-fields.adoc[]
+
+
+[[resource-user-list]]
+=== User auflisten
+Eine `GET` Anfrage an /api/users listet alle user auf.
+
+==== Beispiel Anfrage
+
+include::{snippets}/get-users/curl-request.adoc[]
+
+==== Beispiel Antwort
+
+include::{snippets}/get-users/http-response.adoc[]
+
+
+[[resource-user-getbyusername]]
+=== User über username aufrufen
+Eine `GET` Anfrage an /api/users/{username} gibt den user mit betreffendem username zurück.
+
+==== Pfad Parameter
+
+include::{snippets}/get-user-by-username/path-parameters.adoc[]
+
+==== Beispiel Anfrage
+
+include::{snippets}/get-user-by-username/curl-request.adoc[]
+
+==== Beispiel Antwort
+
+include::{snippets}/get-user-by-username/http-response.adoc[]
+
+
+[[resource-user-create]]
+=== User erstellen
+Eine `POST` Anfrage an /api/users/ erstellt einen neuen user.
+
+==== Beispiel Anfrage
+
+include::{snippets}/post-user/curl-request.adoc[]
+
+==== Beispiel Antwort
+
+include::{snippets}/post-user/http-response.adoc[]
+
+
+[[resource-user-update]]
+=== User updaten
+Eine `PUT` Anfrage an /api/users/{username} updated den user mit betreffendem username.
+
+==== Pfad Parameter
+
+include::{snippets}/put-user/path-parameters.adoc[]
+
+==== Beispiel Anfrage
+
+include::{snippets}/put-user/curl-request.adoc[]
+
+==== Beispiel Antwort
+
+include::{snippets}/put-user/http-response.adoc[]
+
+[[resource-user-delete]]
+=== User löschen
+Eine `DELETE` Anfrage an /api/users/{username} löscht den user mit betreffendem username.
+
+==== Pfad Parameter
+
+include::{snippets}/delete-user/path-parameters.adoc[]
+
+==== Beispiel Anfrage
+
+include::{snippets}/delete-user/curl-request.adoc[]
+
+==== Beispiel Antwort
+
+include::{snippets}/delete-user/http-response.adoc[]
+

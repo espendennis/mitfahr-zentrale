@@ -1,4 +1,4 @@
-package com.espen;
+package com.espen.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -17,33 +17,34 @@ import com.espen.ws.model.User;
 import com.espen.ws.services.UsersServiceInterface;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Transactional
 @TestPropertySource("test.properties")
 public class UserTests {
 
 	@Autowired
 	private UsersServiceInterface usersService;
-	
-	
-	User user1 = new User("espendennis", "espen", "dennis", "dbpass", "dennis.espen@hotmail.com", "5551234");
-	User user2 = new User("BenjaminFranklin", "Franklin", "Benjamin", "dbpass", "benjamin.franklin@hotmail.com", "5551234");
-	
+
+	private final User user1 = new User("espendennis", "espen", "dennis", "dbpass", "dennis.espen@hotmail.com",
+			"5551234");
+	private final User user2 = new User("BenjaminFranklin", "Franklin", "Benjamin", "dbpass",
+			"benjamin.franklin@hotmail.com", "5551234");
+
 	@Before
-	public void init(){
+	public void init() {
 		usersService.save(user1);
 		usersService.save(user2);
 	}
-	
+
 	@Test
-	public void createAndGetUser(){
+	public void createAndGetUser() {
 
 		assertEquals("Retrieved user should match", user1, usersService.findOne(user1.getUsername()));
 		assertEquals("There should be 2 users found", 2, usersService.findAll().size());
 	}
-	
+
 	@Test
-	public void Update(){
+	public void Update() {
 		user2.setAuthority("ROLE_ADMIN");
 		user2.setEmail("barack.obama@hotmail.com");
 		user2.setFirstname("Barack");
@@ -54,14 +55,13 @@ public class UserTests {
 		usersService.update(user2);
 		assertEquals("Retrieved user should match", user1, usersService.findOne(user1.getUsername()));
 	}
-	
+
 	@Test
-	public void delete(){
+	public void delete() {
 		usersService.delete(user2);
 		assertEquals("One user should be found", 1, usersService.findAll().size());
 		User userNull = usersService.findOne(user2.getUsername());
 		assertNull("Should not find the user", userNull);
 	}
-	
-	
+
 }
